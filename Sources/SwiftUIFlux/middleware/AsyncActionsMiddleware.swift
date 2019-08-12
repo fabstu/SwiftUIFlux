@@ -11,7 +11,9 @@ public let asyncActionsMiddleware: Middleware<FluxState> = { dispatch, getState 
     return { next in
         return { action in
             if let action = action as? AsyncAction {
-                action.execute(state: getState(), dispatch: dispatch)
+                DispatchQueue.global(qos: .background).async {
+                    action.execute(state: getState(), dispatch: dispatch)
+                }
             }
             return next(action)
         }
